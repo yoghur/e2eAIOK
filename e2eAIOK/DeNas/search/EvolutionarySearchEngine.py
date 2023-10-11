@@ -4,6 +4,8 @@ from e2eAIOK.DeNas.cv.utils.vit import vit_mutation_random_func, vit_crossover_r
 from e2eAIOK.DeNas.nlp.utils import bert_mutation_random_func, bert_crossover_random_func
 from e2eAIOK.DeNas.asr.utils.asr_nas import asr_mutation_random_func, asr_crossover_random_func
 from e2eAIOK.DeNas.thirdparty.utils import hf_mutation_random_func, hf_crossover_random_func
+import time
+
 
 class EvolutionarySearchEngine(BaseSearchEngine):
 
@@ -67,6 +69,7 @@ class EvolutionarySearchEngine(BaseSearchEngine):
         max_iters = self.params.scale_factor * self.params.population_num 
         cand_iter = self.stack_random_cand(self.populate_random_func)
         while len(res) < self.params.population_num and max_iters > 0:
+            time1 = time.time()
             max_iters -= 1
             cand = next(cand_iter)
             if not self.cand_islegal(cand):
@@ -75,7 +78,8 @@ class EvolutionarySearchEngine(BaseSearchEngine):
                 continue
             self.cand_evaluate(cand)
             res.append(cand)
-            self.logger.info('random {}/{} structure {} nas_score {} params {}'.format(len(res), self.params.population_num, cand, self.vis_dict[cand]['score'], self.vis_dict[cand]['params']))
+            time2 = time.time()
+            self.logger.info('random {}/{} structure {} nas_score {} params {} cost_time {}'.format(len(res), self.params.population_num, cand, self.vis_dict[cand]['score'], self.vis_dict[cand]['params'], time2-time1))
         self.logger.info('random_num = {}'.format(len(res)))
         self.candidates += res
 
@@ -87,6 +91,7 @@ class EvolutionarySearchEngine(BaseSearchEngine):
         max_iters = self.params.scale_factor * self.params.mutation_num  
         cand_iter = self.stack_random_cand(self.mutation_random_func)
         while len(res) < self.params.mutation_num and max_iters > 0:
+            time1 = time.time()
             max_iters -= 1
             cand = next(cand_iter)
             if not self.cand_islegal(cand):
@@ -95,7 +100,8 @@ class EvolutionarySearchEngine(BaseSearchEngine):
                 continue
             self.cand_evaluate(cand)
             res.append(cand)
-            self.logger.info('mutation {}/{} structure {} nas_score {} params {}'.format(len(res), self.params.mutation_num, cand, self.vis_dict[cand]['score'], self.vis_dict[cand]['params']))
+            time2 = time.time()
+            self.logger.info('mutation {}/{} structure {} nas_score {} params {} cost_time {}'.format(len(res), self.params.mutation_num, cand, self.vis_dict[cand]['score'], self.vis_dict[cand]['params'], time2-time1))
         self.logger.info('mutation_num = {}'.format(len(res)))
         return res
 
@@ -107,6 +113,7 @@ class EvolutionarySearchEngine(BaseSearchEngine):
         max_iters = self.params.scale_factor * self.params.crossover_num
         cand_iter = self.stack_random_cand(self.crossover_random_func)
         while len(res) < self.params.crossover_num and max_iters > 0:
+            time1 = time.time()
             max_iters -= 1
             cand = next(cand_iter)
             if not self.cand_islegal(cand):
@@ -115,7 +122,8 @@ class EvolutionarySearchEngine(BaseSearchEngine):
                 continue
             self.cand_evaluate(cand)
             res.append(cand)
-            self.logger.info('crossover {}/{} structure {} nas_score {} params {}'.format(len(res), self.params.crossover_num, cand, self.vis_dict[cand]['score'], self.vis_dict[cand]['params']))
+            time2 = time.time()
+            self.logger.info('crossover {}/{} structure {} nas_score {} params {} cost_time {}'.format(len(res), self.params.crossover_num, cand, self.vis_dict[cand]['score'], self.vis_dict[cand]['params'], time2-time1))
         self.logger.info('crossover_num = {}'.format(len(res)))
         return res
 

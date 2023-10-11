@@ -15,6 +15,7 @@ class ModelBuilderCVDeNas(ModelBuilderCV):
             raise RuntimeError(f"model structure string not found")
         
         if self.cfg.domain == 'cnn':
+            print(f"model arch: {arch}")
             model = DeMainNet(num_classes=self.cfg.num_classes, plainnet_struct=arch, no_create=False)
         elif self.cfg.domain == 'vit':
             model = Vision_TransformerSuper(img_size=self.cfg.input_size,
